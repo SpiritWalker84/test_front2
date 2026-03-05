@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: {{ viewport_width }}px;
+      height: {{ viewport_height }}px;
+      display: flex;
+      flex-direction: column;
+      padding: {{ design.padding }}px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      {% if design.bg_type == 'color' %}
+      background: {{ design.bg_color or '#ffffff' }};
+      {% else %}
+      background: url('{{ design.bg_image_url }}') center/cover;
+      {% endif %}
+      {% if design.bg_dim_amount and design.bg_dim_amount > 0 %}
+      position: relative;
+      {% endif %}
+    }
+    {% if design.bg_dim_amount and design.bg_dim_amount > 0 %}
+    body::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,{{ design.bg_dim_amount }});
+      pointer-events: none;
+    }
+    .content { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1;
+      justify-content: {{ 'flex-start' if design.align_vertical == 'top' else ('flex-end' if design.align_vertical == 'bottom' else 'center') }};
+      align-items: {{ 'flex-start' if design.align_horizontal == 'left' else ('flex-end' if design.align_horizontal == 'right' else 'center') }};
+      text-align: {{ design.align_horizontal }};
+    }
+    {% else %}
+    .content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: {{ 'flex-start' if design.align_vertical == 'top' else ('flex-end' if design.align_vertical == 'bottom' else 'center') }};
+      align-items: {{ 'flex-start' if design.align_horizontal == 'left' else ('flex-end' if design.align_horizontal == 'right' else 'center') }};
+      text-align: {{ design.align_horizontal }};
+    }
+    {% endif %}
+    .header { font-size: 14px; color: #666; margin-bottom: 12px; }
+    h1 {
+      font-size: {{ design.title_font_size or 32 }}px;
+      margin-bottom: 16px;
+      line-height: 1.2;
+      max-width: 100%;
+      color: {{ design.highlight_color or '#111111' }};
+    }
+    .body {
+      font-size: {{ design.body_font_size or 18 }}px;
+      line-height: 1.6;
+      flex: 1;
+      max-width: 100%;
+      white-space: pre-wrap;
+    }
+    .footer { font-size: 14px; color: #666; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="content">
+    {% if design.show_header and design.header_text %}
+    <div class="header">{{ design.header_text }}</div>
+    {% endif %}
+    <h1>{{ title }}</h1>
+    <div class="body">{{ body }}</div>
+    {% if footer %}
+    <div class="footer">{{ footer }}</div>
+    {% endif %}
+    {% if design.show_footer and design.footer_text %}
+    <div class="footer">{{ design.footer_text }}</div>
+    {% endif %}
+  </div>
+</body>
+</html>
